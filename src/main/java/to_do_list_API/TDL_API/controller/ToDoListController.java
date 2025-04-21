@@ -10,6 +10,7 @@ import to_do_list_API.TDL_API.domain.User;
 import to_do_list_API.TDL_API.service.ToDoListService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,5 +46,15 @@ public class ToDoListController {
         }
 
         return ResponseEntity.ok(toDoList);
+    }
+    @PostMapping("/toDoList/{todolist}/check")
+    public ResponseEntity<String> updateToDoListCheckedStatus(@PathVariable int todolist) {
+        Optional<ToDoList> updatedToDo = toDoListService.updateToDoListCheckedStatus(todolist);
+
+        if (updatedToDo.isPresent()) {
+            return ResponseEntity.ok("할 일 완료 상태로 업데이트되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 pid에 대한 할 일을 찾을 수 없습니다.");
+        }
     }
 }
