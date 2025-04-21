@@ -37,4 +37,12 @@ public class ToDoListService {
 
         return Optional.empty(); // 해당 pid에 대한 ToDoList가 없을 경우
     }
+    public Optional<ToDoList> deleteToDoList(int pid){
+        Optional<ToDoList> toDoListOpt = toDoListRepository.findByPid(pid);
+        if (toDoListOpt.isPresent()) {
+            toDoListRepository.deleteById((long) pid);  // 삭제
+        }
+
+        return toDoListOpt; // 삭제되었든 아니든, 원래의 값을 반환
+    }
 }
