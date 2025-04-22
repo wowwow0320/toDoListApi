@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import to_do_list_API.TDL_API.SessionConst;
 import to_do_list_API.TDL_API.domain.ToDoList;
 import to_do_list_API.TDL_API.domain.User;
+import to_do_list_API.TDL_API.dto.ToDoCountPerDateDTO;
 import to_do_list_API.TDL_API.service.ToDoListService;
 
 import java.util.List;
@@ -70,5 +71,10 @@ public class ToDoListController {
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 pid에 대한 할 일을 찾을 수 없습니다.");
         }
+    }
+    @GetMapping("/storageBox")
+    public ResponseEntity<List<ToDoCountPerDateDTO>> getToDoCountsByDate(@RequestParam int userId) {
+        List<ToDoCountPerDateDTO> counts = toDoListService.countToDoListGroupByDate(userId);
+        return ResponseEntity.ok(counts);
     }
 }
