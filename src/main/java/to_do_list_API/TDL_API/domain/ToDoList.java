@@ -21,4 +21,5 @@ public class ToDoList {
     // 연관 관계 없이 userId와 categoryId  저장
     private int userId;
     private int categoryId;
+    private String categoryName;
 }

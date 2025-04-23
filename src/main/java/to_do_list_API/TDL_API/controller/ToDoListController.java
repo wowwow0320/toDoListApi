@@ -19,27 +19,27 @@ public class ToDoListController {
 
     private final ToDoListService toDoListService;
 
-    @PostMapping("/toDoList/{categoryPid}")
+    @PostMapping("/toDoList/{categoryPid}/{categoryName}")
     public ResponseEntity<?> saveToDo(@RequestBody ToDoList toDoList,
-                                           @PathVariable int categoryPid,
+                                           @PathVariable int categoryPid, @PathVariable String categoryName,
                                            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User user) {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
         int userId = user.getPid();
-        ToDoList saveToDo= toDoListService.saveToDo(toDoList, userId, categoryPid);
+        ToDoList saveToDo= toDoListService.saveToDo(toDoList, userId, categoryPid, categoryName);
 
         return ResponseEntity.ok(saveToDo);
     }
-    @GetMapping("/toDoList/{categoryPid}")
-    public ResponseEntity<?>  getToDo(@PathVariable int categoryPid,
+    @GetMapping("/toDoList/{categoryPid}/{categoryName}")
+    public ResponseEntity<?>  getToDo(@PathVariable int categoryPid,@PathVariable String categoryName,
                                   @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User user){
         if(user == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
         int userId = user.getPid();
-        List<ToDoList> toDoList = toDoListService.getToDoList(userId, categoryPid);
+        List<ToDoList> toDoList = toDoListService.getToDoList(userId, categoryPid, categoryName);
 
         if (toDoList.isEmpty()) {
             ToDoList emptyToDoList = ToDoList.builder()
@@ -47,6 +47,7 @@ public class ToDoListController {
                     .isChecked(false)
                     .categoryId(categoryPid)
                     .userId(userId)
+                    .categoryName(categoryName)
                     .build();
             return ResponseEntity.ok(emptyToDoList);
         }
@@ -76,5 +77,24 @@ public class ToDoListController {
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 pid에 대한 할 일을 찾을 수 없습니다.");
         }
+    }
+    @GetMapping("/toDoList")
+    public ResponseEntity<?> getTodayToDoList(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User user){
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+        int userId = user.getPid();
+        List<ToDoList> todayToDoList = toDoListService.getTodayToDoList(userId);
+        if (todayToDoList.isEmpty()) {
+            ToDoList emptyToDoList = ToDoList.builder()
+                    .task(null)
+                    .isChecked(false)
+                    .userId(userId)
+                    .build();
+            return ResponseEntity.ok(emptyToDoList);
+
+        }
+
+        return ResponseEntity.ok(todayToDoList);
     }
 }

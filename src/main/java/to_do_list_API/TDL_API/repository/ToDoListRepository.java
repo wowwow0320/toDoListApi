@@ -11,9 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface ToDoListRepository extends JpaRepository<ToDoList, Integer> {
-    List<ToDoList> findAllByUserIdAndCategoryId(int userId, int categoryId);
+    List<ToDoList> findAllByUserIdAndCategoryIdAndCategoryName(int userId, int categoryId, String categoryName);
     Optional<ToDoList> findByPid(int pid);
     void deleteByPid(int pid);
 
-    int countByUserIdAndCategoryIdIn(int userId, List<Integer> categoryIds);
+    List<ToDoList> findAllByUserIdAndCategoryId(int userId, int categoryId);
 }
