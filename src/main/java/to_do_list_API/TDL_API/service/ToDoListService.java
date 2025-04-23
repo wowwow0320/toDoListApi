@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import to_do_list_API.TDL_API.domain.Category;
 import to_do_list_API.TDL_API.domain.ToDoList;
-import to_do_list_API.TDL_API.dto.ToDoCountPerDateDTO;
 import to_do_list_API.TDL_API.repository.CategoryRepository;
 import to_do_list_API.TDL_API.repository.ToDoListRepository;
 
@@ -58,33 +57,5 @@ public class ToDoListService {
 
         return toDoListRepository.findAllByUserIdAndCategoryId(userId, categoryId);
     }
-    public List<ToDoCountPerDateDTO> countToDoListGroupByDate(int userId) {
-
-        // 1. 해당 유저의 모든 카테고리 가져오기
-        List<Category> allCategories = categoryRepository.findAllByPid(userId);
-
-        // 2. 날짜별로 그룹핑
-        Map<LocalDate, List<Category>> groupedByDate = allCategories.stream()
-                .collect(Collectors.groupingBy(Category::getDate));
-
-        // 3. 날짜별로 categoryId 모아서 ToDoList 개수 세기
-        List<ToDoCountPerDateDTO> result = new ArrayList<>();
-
-        for (Map.Entry<LocalDate, List<Category>> entry : groupedByDate.entrySet()) {
-            LocalDate date = entry.getKey();
-            List<Integer> categoryIds = entry.getValue().stream()
-                    .map(Category::getPid)
-                    .collect(Collectors.toList());
-
-            int count = toDoListRepository.countByUserIdAndCategoryIdIn(userId, categoryIds);
-
-            result.add(new ToDoCountPerDateDTO(date, count));
-        }
-
-        return result;
-    }
-
-
-
 
 }

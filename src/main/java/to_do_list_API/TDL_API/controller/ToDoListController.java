@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import to_do_list_API.TDL_API.SessionConst;
+import to_do_list_API.TDL_API.domain.Category;
 import to_do_list_API.TDL_API.domain.ToDoList;
 import to_do_list_API.TDL_API.domain.User;
-import to_do_list_API.TDL_API.dto.ToDoCountPerDateDTO;
 import to_do_list_API.TDL_API.service.ToDoListService;
 
 import java.util.List;
@@ -42,8 +42,13 @@ public class ToDoListController {
         List<ToDoList> toDoList = toDoListService.getToDoList(userId, categoryPid);
 
         if (toDoList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("해당 카테고리에 할 일이 존재하지 않습니다.");
+            ToDoList emptyToDoList = ToDoList.builder()
+                    .task(null)
+                    .isChecked(false)
+                    .categoryId(categoryPid)
+                    .userId(userId)
+                    .build();
+            return ResponseEntity.ok(emptyToDoList);
         }
 
         return ResponseEntity.ok(toDoList);
@@ -71,10 +76,5 @@ public class ToDoListController {
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 pid에 대한 할 일을 찾을 수 없습니다.");
         }
-    }
-    @GetMapping("/storageBox")
-    public ResponseEntity<List<ToDoCountPerDateDTO>> getToDoCountsByDate(@RequestParam int userId) {
-        List<ToDoCountPerDateDTO> counts = toDoListService.countToDoListGroupByDate(userId);
-        return ResponseEntity.ok(counts);
     }
 }

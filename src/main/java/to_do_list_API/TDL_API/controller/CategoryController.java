@@ -49,8 +49,15 @@ public class CategoryController {
         Optional<Category> category = categoryService.getCategory(date, userId);
 
         if (category.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("해당 날짜에 대한 카테고리를 찾을 수 없습니다.");
+            // 카테고리가 없으면 null 값으로 채운 객체를 반환
+            Category emptyCategory = Category.builder()
+                    .category1(null)
+                    .category2(null)
+                    .category3(null)
+                    .date(date)
+                    .userId(userId)
+                    .build();
+            return ResponseEntity.ok(emptyCategory);
         }
 
         return ResponseEntity.ok(category);
