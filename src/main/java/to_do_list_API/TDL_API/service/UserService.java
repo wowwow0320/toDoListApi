@@ -22,4 +22,15 @@ public class UserService {
     public Optional<User> getUser(int userId){
         return userRepository.findByPid(userId);
     }
+    public Optional<User> changeNickname(int userId, String nickname) {
+        Optional<User> savedUser = userRepository.findByPid(userId);
+
+        if (savedUser.isPresent()) {
+            User existingUser = savedUser.get();
+            existingUser.setNickname(nickname);
+            return Optional.of(userRepository.save(existingUser)); // 저장 후 반환
+        } else {
+            throw new RuntimeException("User not found with pid: " + userId);
+        }
+    }
 }

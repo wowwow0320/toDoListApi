@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import to_do_list_API.TDL_API.SessionConst;
 import to_do_list_API.TDL_API.domain.User;
+import to_do_list_API.TDL_API.dto.UserNicknameDto;
 import to_do_list_API.TDL_API.service.UserService;
 
 import java.util.Optional;
@@ -56,6 +57,16 @@ public class UserController {
                     .body("해당 회원의 정보를 불러오는데 실패하였습니다.");
         }
         return ResponseEntity.ok(savedUser.get());
+    }
+    @PostMapping("/changeNickname")
+    public ResponseEntity<?> changeNickname(@RequestBody UserNicknameDto nicknameDto
+            ,@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User user){
+        Optional<User> changeNickname = userService.changeNickname(user.getPid(), nicknameDto.getNickname());
+        if(changeNickname.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("해당 회원의 정보를 불러오는데 실패하였습니다.");
+        }
+        return ResponseEntity.ok(changeNickname);
     }
 
 
