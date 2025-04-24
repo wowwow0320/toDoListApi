@@ -14,7 +14,10 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name= "category")
+@Table(
+        name = "category", // (옵션) 실제 테이블 이름
+        uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "date"})
+)
 public class Category {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int pid;
