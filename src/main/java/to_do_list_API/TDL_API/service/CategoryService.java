@@ -20,7 +20,7 @@ public class CategoryService {
     public Category saveOrUpdateCategory(CategoryDto categoryDto, int userId) {
         LocalDate date = categoryDto.getDate();
 
-        Optional<Category> existingCategoryOpt = categoryRepository.findByDateAndUserId(userId, date);
+        Optional<Category> existingCategoryOpt = categoryRepository.findByUserIdAndDate(userId, date);
         Category category;
 
         if (existingCategoryOpt.isPresent()) {
@@ -50,6 +50,6 @@ public class CategoryService {
     }
 
     public Optional<Category> getCategory(LocalDate date, int userId) {
-        return categoryRepository.findByDateAndUserId(userId, date);
+        return categoryRepository.findByUserIdAndDate(userId, date);
     }
 }
