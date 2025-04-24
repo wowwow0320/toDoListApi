@@ -53,7 +53,7 @@ public class ToDoListService {
     }
     public List<ToDoList> getTodayToDoList(int userId) {
         LocalDate date = LocalDate.now();
-        Optional<Category> byDateAndUserId = categoryRepository.findByDateAndUserId(date, userId);
+        Optional<Category> byDateAndUserId = categoryRepository.findByDateAndUserId(userId, date);
 
         if (byDateAndUserId.isPresent()) {
             Category category = byDateAndUserId.get();

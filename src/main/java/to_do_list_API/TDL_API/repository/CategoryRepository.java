@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    Optional<Category> findByDateAndUserId(LocalDate date, int userId);
+    Optional<Category> findByDateAndUserId( int userId, LocalDate date);
 }
