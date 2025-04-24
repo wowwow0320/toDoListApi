@@ -20,6 +20,9 @@ public class CategoryService {
     public Category saveOrUpdateCategory(CategoryDto categoryDto, int userId) {
         LocalDate date = categoryDto.getDate();
 
+        // 로그 찍어서 실제 값 확인
+        System.out.println("🔍 Checking for userId: " + userId + ", date: " + date);
+
         Optional<Category> existingCategoryOpt = categoryRepository.findByUserIdAndDate(userId, date);
         Category category;
 
@@ -37,6 +40,11 @@ public class CategoryService {
             }
 
         } else {
+            // 중복 방지 더블 체크 (예외 상황 대비)
+            if (categoryRepository.existsByUserIdAndDate(userId, date)) {
+                throw new IllegalStateException("이미 해당 날짜의 카테고리가 존재합니다.");
+            }
+
             category = Category.builder()
                     .category1(categoryDto.getCategory1())
                     .category2(categoryDto.getCategory2())
@@ -47,6 +55,7 @@ public class CategoryService {
         }
 
         return categoryRepository.save(category);
+
     }
 
     public Optional<Category> getCategory(LocalDate date, int userId) {
