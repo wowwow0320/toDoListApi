@@ -1,8 +1,9 @@
 package to_do_list_API.TDL_API.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import to_do_list_API.TDL_API.domain.Category;
 import to_do_list_API.TDL_API.dto.CategoryDto;
 import to_do_list_API.TDL_API.repository.CategoryRepository;
@@ -16,7 +17,7 @@ import java.util.Optional;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Category saveOrUpdateCategory(CategoryDto categoryDto, int userId) {
         LocalDate date = categoryDto.getDate();
 
