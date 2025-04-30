@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import to_do_list_API.TDL_API.domain.Category;
 import to_do_list_API.TDL_API.domain.ToDoList;
+import to_do_list_API.TDL_API.dto.ToDoSummaryDto;
 import to_do_list_API.TDL_API.repository.CategoryRepository;
 import to_do_list_API.TDL_API.repository.ToDoListRepository;
 
@@ -63,5 +64,38 @@ public class ToDoListService {
             return Collections.emptyList();
         }
     }
+    public List<ToDoSummaryDto> getToDoListPercent(int userId) {
+        List<Category> categories = categoryRepository.findAllByUserId(userId);
+
+        Map<LocalDate, List<Category>> categoriesByDate = categories.stream()
+                .collect(Collectors.groupingBy(Category::getDate));
+
+        List<ToDoSummaryDto> result = new ArrayList<>();
+
+        for (Map.Entry<LocalDate, List<Category>> entry : categoriesByDate.entrySet()) {
+            LocalDate date = entry.getKey();
+            List<Category> categoryList = entry.getValue();
+
+            int total = 0;
+            int checked = 0;
+
+            for (Category category : categoryList) {
+                int categoryId = category.getPid();
+                List<ToDoList> todos = toDoListRepository.findAllByUserIdAndCategoryId(userId, categoryId);
+
+                total += todos.size();
+                checked += (int) todos.stream().filter(ToDoList::isChecked).count();
+            }
+
+            double successRate = total > 0 ? (checked * 100.0) / total : 0.0;
+            result.add(new ToDoSummaryDto(date, successRate, checked, total));
+        }
+
+        // 🔽 날짜 기준으로 내림차순 정렬 추가
+        result.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+
+        return result;
+    }
+
 
 }

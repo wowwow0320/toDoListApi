@@ -72,4 +72,6 @@ public class CategoryService {
     public Optional<Category> getCategory(LocalDate date, int userId) {
         return categoryRepository.findByUserIdAndDate(userId, date);
     }
+
+
 }

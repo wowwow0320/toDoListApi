@@ -13,4 +13,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Optional<Category> findByUserIdAndDate( int userId, LocalDate date);
     boolean existsByUserIdAndDate(int userId, LocalDate date);  // 중복 방지용
+    List<Category> findAllByUserId(int userId);
 }

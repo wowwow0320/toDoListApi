@@ -8,6 +8,7 @@ import to_do_list_API.TDL_API.SessionConst;
 import to_do_list_API.TDL_API.domain.Category;
 import to_do_list_API.TDL_API.domain.ToDoList;
 import to_do_list_API.TDL_API.domain.User;
+import to_do_list_API.TDL_API.dto.ToDoSummaryDto;
 import to_do_list_API.TDL_API.service.ToDoListService;
 
 import java.util.List;
@@ -96,5 +97,18 @@ public class ToDoListController {
         }
 
         return ResponseEntity.ok(todayToDoList);
+    }
+    @GetMapping("/storageBox")
+    public ResponseEntity<?> getToDoListPercent(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User user){
+        if(user == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+        int userId = user.getPid();
+        List<ToDoSummaryDto> toDoListPercent = toDoListService.getToDoListPercent(userId);
+        if (toDoListPercent == null || toDoListPercent.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("할 일이 존재하지 않습니다.");
+        }
+
+        return ResponseEntity.ok(toDoListPercent);
     }
 }
